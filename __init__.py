@@ -9,6 +9,8 @@ from sklearn.utils import check_random_state
 from fuzzylearn.kernel import GaussianKernel, PrecomputedKernel
 from fuzzylearn.fuzzifiers import ExponentialFuzzifier
 
+from warnings import warn
+
 try:
     import gurobipy as gpy
     gurobi_ok = True
@@ -279,7 +281,7 @@ Throws:
 class FuzzyInductor(BaseEstimator, RegressorMixin):
 
     def __init__(self, c=1, k=GaussianKernel(),
-                 sample_generator=None, fuzzifier=ExponentialFuzzifier(),
+                 sample_generator=None, fuzzifier=ExponentialFuzzifier,
                  solve_strategy=(solve_optimization_tensorflow, {}),
                  random_state=None,
                  return_vars=False, return_profile=False):
@@ -336,12 +338,13 @@ class FuzzyInductor(BaseEstimator, RegressorMixin):
         #                          for i in chi_SV_index]
 
         if len(chi_SV_square_distance) == 0:
-            #self.estimated_membership_ = None
-            #self.train_error_ = np.inf
-            #self.chis_ = None
-            #self.profile = None
-            #return self
-            raise ValueError('No support vectors found')
+            self.estimated_membership_ = None
+            self.train_error_ = np.inf
+            self.chis_ = None
+            self.profile = None
+            warn('No support vectors found')
+            return self
+            #raise ValueError('No support vectors found')
 
         self.SV_square_distance_ = np.mean(chi_SV_square_distance)
         num_samples = 500
@@ -350,7 +353,7 @@ class FuzzyInductor(BaseEstimator, RegressorMixin):
             self.sample_generator = lambda x: x
 
         sample = map(self.sample_generator,
-                     self.random_state_.random(num_samples))
+                     self.random_state_.random_sample(num_samples))
 
 
         fuzzifier = self.fuzzifier(X, y)
@@ -379,5 +382,7 @@ class FuzzyInductor(BaseEstimator, RegressorMixin):
         return np.array([self.estimated_membership_(x) for x in X])
 
     def score(self, X, y):
-        return -np.mean([(self.estimated_membership_(x) - mu)**2
-                         for x, mu in zip(X, y)])
+        if self.estimated_membership_ :
+            return -np.mean([(self.estimated_membership_(x) - mu)**2 for x, mu in zip(X, y)])
+        else:
+            return -np.inf
