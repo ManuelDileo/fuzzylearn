@@ -382,7 +382,8 @@ class FuzzyInductor(BaseEstimator, RegressorMixin):
         return np.array([self.estimated_membership_(x) for x in X])
 
     def score(self, X, y):
-        if self.estimated_membership_ :
-            return -np.mean([(self.estimated_membership_(x) - mu)**2 for x, mu in zip(X, y)])
-        else:
+        if self.estimated_membership_ is None:
             return -np.inf
+        else:
+            return -np.mean([(self.estimated_membership_(x) - mu)**2
+                             for x, mu in zip(X, y)])
