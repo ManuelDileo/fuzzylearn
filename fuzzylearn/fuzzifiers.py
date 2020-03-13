@@ -152,7 +152,7 @@ class LinearFuzzifier(BaseFuzzifier):
 
 
     def __repr__(self):
-        return 'LinearFuzzifier({}, {})'.format(self.xs, self.mus)
+        return "LinearFuzzifier({}, {}, profile='{}')".format(self.xs, self.mus, self.profile)
 
     def __str__(self):
         return self.__repr__()
@@ -259,7 +259,7 @@ class ExponentialFuzzifier(BaseFuzzifier):
 
 
     def __repr__(self):
-        return 'ExponentialFuzzifier({}, {})'.format(self.xs, self.mus)
+        return "ExponentialFuzzifier({}, {}, profile='{}', alpha={})".format(self.xs, self.mus, self.profile, self.alpha)
 
     def __str__(self):
         return self.__repr__()
@@ -303,7 +303,7 @@ class QuantileConstantPiecewiseFuzzifier(BaseFuzzifier):
         return r_to_mu
 
     def __repr__(self):
-        return 'QuantileConstantPiecewiseFuzzifier()'
+        return 'QuantileConstantPiecewiseFuzzifier({}, {})'.format(self.xs, self.mus)
 
     def __str__(self):
         return self.__repr__()
@@ -351,7 +351,7 @@ class QuantileLinearPiecewiseFuzzifier(BaseFuzzifier):
         return r_to_mu
 
     def __repr__(self):
-        return 'QuantileLinearPiecewiseFuzzifier()'
+        return 'QuantileLinearPiecewiseFuzzifier({}, {})'.format(self.xs, self.mus)
 
     def __str__(self):
         return self.__repr__()
