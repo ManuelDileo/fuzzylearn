@@ -37,7 +37,7 @@ class BaseFuzzifier:
 class CrispFuzzifier(BaseFuzzifier):
     def __init__(self, xs=None, mus=None):
         super().__init__(xs, mus)
-        
+
         self.name = 'Crisp'
         self.latex_name = '$\\hat\\mu_{\\text{crisp}}$'
 
@@ -209,7 +209,7 @@ class ExponentialFuzzifier(BaseFuzzifier):
                     if rr < r_1:
                         return 1
                     else:
-                        return np.exp(-(rr - r_1) / s) 
+                        return np.exp(-(rr - r_1) / s)
                 return [r_to_mu_single(rr) for rr in r]
 
             popt, _ = curve_fit(r_to_mu_prototype, rdata, self.mus,
@@ -223,7 +223,7 @@ class ExponentialFuzzifier(BaseFuzzifier):
                     if rr < r_1:
                         return 1
                     else:
-                        return np.exp(-(rr - r_1) / s) 
+                        return np.exp(-(rr - r_1) / s)
                 return [r_to_mu_single(rr) for rr in r]
 
             popt, _ = curve_fit(r_to_mu_prototype, rdata, self.mus,
@@ -252,7 +252,7 @@ class ExponentialFuzzifier(BaseFuzzifier):
             def r_to_mu(r):
                 return 1 if r <= ssd \
                          else np.exp(np.log(self.alpha)/q * (r - ssd))
-        
+
             return r_to_mu
         else:
             raise ValueError('This should not happen. Check the constructor')
@@ -334,10 +334,13 @@ class QuantileLinearPiecewiseFuzzifier(BaseFuzzifier):
                              dtype=float)
         external_dist = [s-SV_square_distance
                          for s in sample if s > SV_square_distance]
-        m = np.median(external_dist)
-        q1 = np.percentile(external_dist, 25)
-        q3 = np.percentile(external_dist, 75)
-        mx = np.max(sample) - SV_square_distance
+        if external_dist:
+            m = np.median(external_dist)
+            q1 = np.percentile(external_dist, 25)
+            q3 = np.percentile(external_dist, 75)
+            mx = np.max(sample) - SV_square_distance
+        else:
+            m = q1 = q3 = mx = 0
 
         def r_to_mu(r):
             ssd = SV_square_distance
@@ -367,5 +370,3 @@ class QuantileLinearPiecewiseFuzzifier(BaseFuzzifier):
 
     def __nonzero__(self):
         return True
-
-

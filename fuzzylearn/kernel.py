@@ -38,7 +38,7 @@ class Kernel(object):
     :meth:`compute`, having as input two patterns and returning the kernel
     value. Subclasses essentially implements the strategy pattern [Gamma et
     al., 1995].
-    
+
     The class defaults its :obj:`precomputed` field to ``False``. Subclassses
     for precomputed kernels should override this setting.
 
@@ -688,7 +688,8 @@ class HyperbolicKernel(Kernel):
 
         """
 
-        return float(tanh(self.scale * dot(arg_1, arg_2) +  self.offset))
+        #return float(tanh(self.scale * dot(arg_1, arg_2) +  self.offset))
+        return float(tanh(self.scale * (array(arg_1).dot(array(arg_2))) +  self.offset))
 
     def __repr__(self):
         return 'HyperbolicKernel(' + repr(self.scale) + ', ' + repr(self.offset) + ')'
@@ -827,7 +828,7 @@ class PrecomputedKernel(Kernel):
 
 #        ind_1 = self.patterns.index(arg_1)
 #        ind_2 = self.patterns.index(arg_2)
-#        
+#
 #        return float(self.kernel_computations[ind_1][ind_2])
         return float(self.kernel_computations[arg_1[0]][arg_2[0]])
 
