@@ -289,9 +289,13 @@ class QuantileConstantPiecewiseFuzzifier(BaseFuzzifier):
         sample = map(estimated_square_distance_from_center, sample)
         external_dist = [s-SV_square_distance
                          for s in sample if s > SV_square_distance]
-        m = np.median(external_dist)
-        q1 = np.percentile(external_dist, 25)
-        q3 = np.percentile(external_dist, 75)
+        
+        if external_dist:
+            m = np.median(external_dist)
+            q1 = np.percentile(external_dist, 25)
+            q3 = np.percentile(external_dist, 75)
+        else:
+            m = q1 = q3 = 0
 
         def r_to_mu(r):
             return 1 if r <= SV_square_distance \
