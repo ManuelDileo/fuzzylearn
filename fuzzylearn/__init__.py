@@ -353,7 +353,7 @@ class FuzzyInductor(BaseEstimator, RegressorMixin):
             self.sample_generator = lambda x: x
 
         sample = map(self.sample_generator,
-                     self.random_state_.random_sample(num_samples))
+                     self.random_state_.random_sample(size=(num_samples,len(X[0]))))
 
 
         fuzzifier = self.fuzzifier(X, y)
